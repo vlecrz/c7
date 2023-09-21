@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="style.css" />
+        <title>DNOO37</title>
+    </head>
+    <body>
+        <nav>
+            <h1><a href="index.html">Valentina Cruz</a></h1>
+            <select onchange="location = this.value;">
+                <option value="index.html">INDEX</option>
+                <option value="astrology.html" selected>ASTROLOGY</option>
+                <option value="astronomy.html">ASTRONOMY</option>
+                <option value="earthquakes.html">EARTHQUAKES</option>
+                <option value="weather.html">WEATHER</option>
+            </select>
+        </nav>
+        <header style="display: none;">
+            <div>Marque uno:</div>
+            <div><input type="radio" name="selecciona" value="todos" checked />Todos</div>
+            <div><input type="radio" name="selecciona" value="agua" />Agua</div>
+            <div><input type="radio" name="selecciona" value="aire" />Aire</div>
+            <div><input type="radio" name="selecciona" value="fuego" />Fuego</div>
+            <div><input type="radio" name="selecciona" value="tierra" />Tierra</div>
+        </header>
+        <aside></aside>
+        <main></main>
+        <script>
+            const alternativas = document.querySelector("header");
+            const detalles = document.querySelector("aside");
+            const respuesta = document.querySelector("main");
+            var datos;
+            async function estudiantes() {
+                const data = await fetch("https://raw.githubusercontent.com/profesorfaco/dno037-2023-2/main/clase-07/_curso.json");
+                datos = await data.json();
+                alternativas.removeAttribute("style");
+                datos.forEach((x) => {
+                    if(x.zodiaco.signo !== ""){
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo.split("/")[3]
+                        }</p></div></article>`;
+                    }
+                });
+            }
+            estudiantes().catch((error) => console.error(error));
+
+            function compatibilidad(valor) {
+                respuesta.innerHTML = ``;
+                detalles.innerHTML = ``;
+
+                //Lo que sigue lo saqué de https://www.clara.es/
+
+                if (valor == "fuego") {
+                    about =
+                        "<em>Con signo de fuego (Aries, Leo y Sagitario)</em>: Mejor elemento, no lo digo yo lo dice la ciencia,,, personas que quieren vivir !! pero como puntos negativos son irritables y agresivos. Elemento de Zuko y Tío Iroh";
+                } else if (valor == "agua") {
+                    about =
+                        "<em>Con signo de agua (Cáncer, Escorpio y Piscis)</em>: Emocionales, sentimentales, ven con los ojos del corazón. En cuanto a lo negativo tenemos que son manipuladores e inestables. Katara es un ejemplo.";
+                } else if (valor == "aire") {
+                    about =
+                        "<em>Con signo de aire (Géminis, Libra y Acuario)</em>: Aire es el peor porque son todos mis peores ex. Nunca vi ni un ápice de comunicación que se supone que es su cualidad, al igual que objetivos y racionales. Dentro de las cualidades malas, encotramos la superficialidad y la frialdad, al igual que la falsedad y la mentira. Para pensar señores. Aang es aire, pero me cae bien.";
+                } else if (valor == "tierra"){
+                    about =
+                        "<em>Con signo de tierra (Tauro, Virgo, Capricornio)</em>: Se supone que son concretos, prácticos y materialistas. Eso si, son tercos y rígidos, yo no tenguidea la verdad. Como personaje icónico tenemos a Toph Beifong.";
+                } else {
+                    about = "Diseño y nuevos medios."
+                }
+
+                detalles.innerHTML += `<div><p>${about}</p></div>`;
+
+                datos.forEach((x) => {
+                    if (valor == x.zodiaco.elemento) {
+                        respuesta.innerHTML += `<article><div><img src="${x.avatar}"></div><div><p><a href="integrante.html?lista=${x.lista}">${x.nombres.split(" ")[0]} ${x.apellidos.split(" ")[0]}</a></p><p>${
+                            x.zodiaco.signo.split("/")[3]
+                        }</p></div></article>`;
+                    }
+                });
+            }
+
+            const seleccionado = document.querySelectorAll('input[name="selecciona"]');
+
+            seleccionado.forEach((i) => {
+                i.addEventListener("change", function () {
+                    var valor = this.value;
+                    if (valor !== "todos"){
+                        console.log(valor);
+                        compatibilidad(valor);
+                    } else {
+                        window.location.reload();
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
